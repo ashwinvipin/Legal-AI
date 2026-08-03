@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./App.css";
 import api from "./api";
+import { jsPDF } from "jspdf";
 
 function App() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -44,18 +45,11 @@ function App() {
   const askQuestion = async () => {
 
     if (!uploaded) {
-
       alert("Upload a PDF first.");
-
       return;
-
     }
 
-    if (question.trim() === "") {
-
-      return;
-
-    }
+    if (question.trim() === "") return;
 
     try {
 
@@ -66,7 +60,6 @@ function App() {
       });
 
       setAnswer(response.data.answer);
-
       setPage(response.data.page);
 
     } catch (error) {
@@ -80,6 +73,98 @@ function App() {
       setLoading(false);
 
     }
+
+  };
+
+  // Download PDF
+  const downloadPDF = () => {
+
+    const doc = new jsPDF();
+
+    doc.setFontSize(20);
+    doc.text("Legal AI Analysis Report", 20, 20);
+
+    doc.setFontSize(14);
+    doc.text("Question:", 20, 40);
+
+    doc.setFontSize(12);
+    doc.text(question, 20, 50);
+
+    doc.setFontSize(14);
+    doc.text("Answer:", 20, 70);
+
+    const splitAnswer = doc.splitTextToSize(answer, 170);
+
+    doc.setFontSize(12);
+    doc.text(splitAnswer, 20, 80);
+
+    const y = 90 + splitAnswer.length * 7;
+
+    doc.setFontSize(14);
+    doc.text(`Source Page: ${page}`, 20, y);
+
+    doc.setFontSize(10);
+    doc.text(
+      `Generated on: ${new Date().toLocaleString()}`,
+      20,
+      y + 15
+    );
+
+    doc.save("Legal_AI_Report.pdf");
+
+  };
+
+  // Copy Answer
+  const copyAnswer = () => {
+
+    navigator.clipboard.writeText(answer);
+
+    alert("Answer copied!");
+
+  };
+
+  // Print Report
+  const printAnswer = () => {
+
+    const win = window.open("", "", "width=900,height=700");
+
+    win.document.write(`
+      <html>
+      <head>
+      <title>Legal AI Report</title>
+      <style>
+      body{
+        font-family:Arial;
+        margin:40px;
+      }
+      h1{
+        color:#2c3e50;
+      }
+      </style>
+      </head>
+      <body>
+
+      <h1>Legal AI Analysis Report</h1>
+
+      <h3>Question</h3>
+
+      <p>${question}</p>
+
+      <h3>Answer</h3>
+
+      <p>${answer}</p>
+
+      <h3>Source Page</h3>
+
+      <p>${page}</p>
+
+      </body>
+      </html>
+    `);
+
+    win.document.close();
+
+    win.print();
 
   };
 
@@ -108,9 +193,7 @@ function App() {
           />
 
           <button onClick={uploadPDF}>
-
             Upload
-
           </button>
 
         </div>
@@ -126,9 +209,7 @@ function App() {
           />
 
           <button onClick={askQuestion}>
-
             Ask AI
-
           </button>
 
         </div>
@@ -136,9 +217,7 @@ function App() {
         {loading && (
 
           <div className="loading">
-
             AI is thinking...
-
           </div>
 
         )}
@@ -157,6 +236,22 @@ function App() {
 
             </div>
 
+            <div className="action-buttons">
+
+              <button onClick={copyAnswer}>
+                📋 Copy
+              </button>
+
+              <button onClick={printAnswer}>
+                🖨 Print
+              </button>
+
+              <button onClick={downloadPDF}>
+                📥 Download PDF
+              </button>
+
+            </div>
+
           </div>
 
         )}
@@ -166,6 +261,7 @@ function App() {
     </div>
 
   );
+
 }
 
 export default App;
