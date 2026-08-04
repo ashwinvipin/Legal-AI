@@ -4,34 +4,42 @@ import api from "./api";
 import { jsPDF } from "jspdf";
 
 function App() {
+
   const [selectedFile, setSelectedFile] = useState(null);
+  const [uploaded, setUploaded] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [page, setPage] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [uploaded, setUploaded] = useState(false);
 
   const uploadPDF = async () => {
+
     if (!selectedFile) {
-      alert("Please select a PDF.");
+
+      alert("Please choose a PDF.");
+
       return;
+
     }
 
     const formData = new FormData();
+
     formData.append("file", selectedFile);
 
     try {
+
       setLoading(true);
 
       await api.post("/upload", formData);
 
       setUploaded(true);
 
-      alert("PDF uploaded successfully!");
+      alert("Document uploaded successfully!");
 
-    } catch (error) {
+    } catch (err) {
 
-      console.log(error);
+      console.log(err);
 
       alert("Upload failed.");
 
@@ -40,33 +48,40 @@ function App() {
       setLoading(false);
 
     }
+
   };
 
   const askQuestion = async () => {
 
     if (!uploaded) {
-      alert("Upload a PDF first.");
+
+      alert("Please upload a PDF first.");
+
       return;
+
     }
 
-    if (question.trim() === "") return;
+    if (!question.trim()) return;
 
     try {
 
       setLoading(true);
 
       const response = await api.post("/ask", {
+
         question: question
+
       });
 
       setAnswer(response.data.answer);
+
       setPage(response.data.page);
 
-    } catch (error) {
+    } catch (err) {
 
-      console.log(error);
+      console.log(err);
 
-      alert("Failed to get answer.");
+      alert("Failed to generate answer.");
 
     } finally {
 
@@ -76,75 +91,53 @@ function App() {
 
   };
 
-  // Download PDF
-  const downloadPDF = () => {
-
-    const doc = new jsPDF();
-
-    doc.setFontSize(20);
-    doc.text("Legal AI Analysis Report", 20, 20);
-
-    doc.setFontSize(14);
-    doc.text("Question:", 20, 40);
-
-    doc.setFontSize(12);
-    doc.text(question, 20, 50);
-
-    doc.setFontSize(14);
-    doc.text("Answer:", 20, 70);
-
-    const splitAnswer = doc.splitTextToSize(answer, 170);
-
-    doc.setFontSize(12);
-    doc.text(splitAnswer, 20, 80);
-
-    const y = 90 + splitAnswer.length * 7;
-
-    doc.setFontSize(14);
-    doc.text(`Source Page: ${page}`, 20, y);
-
-    doc.setFontSize(10);
-    doc.text(
-      `Generated on: ${new Date().toLocaleString()}`,
-      20,
-      y + 15
-    );
-
-    doc.save("Legal_AI_Report.pdf");
-
-  };
-
-  // Copy Answer
   const copyAnswer = () => {
 
     navigator.clipboard.writeText(answer);
 
-    alert("Answer copied!");
+    alert("Copied!");
 
   };
 
-  // Print Report
   const printAnswer = () => {
 
-    const win = window.open("", "", "width=900,height=700");
+    const win = window.open("", "", "width=900,height=800");
 
     win.document.write(`
+
       <html>
+
       <head>
+
       <title>Legal AI Report</title>
+
       <style>
+
       body{
-        font-family:Arial;
-        margin:40px;
+
+      font-family:Arial;
+
+      margin:40px;
+
+      line-height:1.8;
+
       }
+
       h1{
-        color:#2c3e50;
+
+      color:#2563eb;
+
       }
+
       </style>
+
       </head>
+
       <body>
 
       <h1>Legal AI Analysis Report</h1>
+
+      <hr>
 
       <h3>Question</h3>
 
@@ -159,8 +152,10 @@ function App() {
       <p>${page}</p>
 
       </body>
+
       </html>
-    `);
+
+      `);
 
     win.document.close();
 
@@ -168,48 +163,134 @@ function App() {
 
   };
 
+  const downloadPDF = () => {
+
+    const doc = new jsPDF();
+
+    doc.setFontSize(22);
+
+    doc.text("Legal AI Analysis Report", 20, 20);
+
+    doc.setFontSize(13);
+
+    doc.text("Question:", 20, 40);
+
+    doc.text(question, 20, 50);
+
+    doc.text("Answer:", 20, 75);
+
+    const lines = doc.splitTextToSize(answer, 170);
+
+    doc.text(lines, 20, 85);
+
+    doc.text(`Source Page : ${page}`, 20, 100 + lines.length * 7);
+
+    doc.text(
+
+      `Generated : ${new Date().toLocaleString()}`,
+
+      20,
+
+      120 + lines.length * 7
+
+    );
+
+    doc.save("Legal_AI_Report.pdf");
+
+  };
+
   return (
 
     <div className="app">
 
-      <div className="container">
+      <div className="glass-card">
 
-        <h1>⚖ Legal AI Assistant</h1>
+        <div className="header">
 
-        <p className="subtitle">
+          <div className="logo">
 
-          Upload a legal PDF and ask questions using AI.
+            ⚖
 
-        </p>
+          </div>
 
-        <div className="card">
+          <div>
 
-          <h2>Upload PDF</h2>
+            <h1>Legal AI Assistant</h1>
 
-          <input
-            type="file"
-            accept=".pdf"
-            onChange={(e) => setSelectedFile(e.target.files[0])}
-          />
+            <p>
 
-          <button onClick={uploadPDF}>
-            Upload
-          </button>
+              AI Powered Legal Document Analysis using RAG & Llama 3.2
+
+            </p>
+
+          </div>
 
         </div>
 
-        <div className="card">
+        <div className="upload-section">
 
-          <h2>Ask a Question</h2>
+          <h2>📄 Upload Legal Document</h2>
+
+          <div className="upload-box">
+
+            <input
+
+              type="file"
+
+              accept=".pdf"
+
+              onChange={(e) => setSelectedFile(e.target.files[0])}
+
+            />
+
+            <p>
+
+              Drag & Drop or Browse PDF
+
+            </p>
+
+          </div>
+
+          <button onClick={uploadPDF}>
+
+            Upload Document
+
+          </button>
+
+          {uploaded && (
+
+            <div className="success">
+
+              ✔ Document uploaded successfully
+
+            </div>
+
+          )}
+
+        </div>
+
+        <div className="question-section">
+
+          <h2>
+
+            💬 Ask Your Question
+
+          </h2>
 
           <textarea
+
             placeholder="Example: What is the termination clause?"
+
             value={question}
+
             onChange={(e) => setQuestion(e.target.value)}
+
           />
 
           <button onClick={askQuestion}>
-            Ask AI
+
+            🔍 Analyze Document
+
           </button>
 
         </div>
@@ -217,7 +298,11 @@ function App() {
         {loading && (
 
           <div className="loading">
-            AI is thinking...
+
+            <div className="spinner"></div>
+
+            <p>Analyzing Document...</p>
+
           </div>
 
         )}
@@ -226,28 +311,40 @@ function App() {
 
           <div className="answer-card">
 
-            <h2>Answer</h2>
+            <h2>
+
+              🤖 AI Analysis
+
+            </h2>
+
+            <hr />
 
             <p>{answer}</p>
 
             <div className="page">
 
-              Source Page: {page}
+              📑 Source Page : {page}
 
             </div>
 
-            <div className="action-buttons">
+            <div className="buttons">
 
               <button onClick={copyAnswer}>
-                📋 Copy
-              </button>
 
-              <button onClick={printAnswer}>
-                🖨 Print
+                📋 Copy
+
               </button>
 
               <button onClick={downloadPDF}>
-                📥 Download PDF
+
+                📥 PDF
+
+              </button>
+
+              <button onClick={printAnswer}>
+
+                🖨 Print
+
               </button>
 
             </div>
@@ -255,6 +352,16 @@ function App() {
           </div>
 
         )}
+
+        <footer>
+
+          <p>
+
+            Powered by FastAPI • RAG • Llama 3.2 • FAISS • Sentence Transformers
+
+          </p>
+
+        </footer>
 
       </div>
 
