@@ -1,17 +1,71 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import "./App.css";
 import api from "./api";
 import { jsPDF } from "jspdf";
 
 function App() {
 
+  /* ------------------------------
+      States
+  ------------------------------ */
+
   const [selectedFile, setSelectedFile] = useState(null);
+
   const [uploaded, setUploaded] = useState(false);
+
   const [loading, setLoading] = useState(false);
 
   const [question, setQuestion] = useState("");
+
   const [answer, setAnswer] = useState("");
+
   const [page, setPage] = useState("");
+
+
+
+  /* ------------------------------
+      Section References
+  ------------------------------ */
+
+  const dashboardRef = useRef(null);
+
+  const documentsRef = useRef(null);
+
+  const assistantRef = useRef(null);
+
+  const reportsRef = useRef(null);
+
+  const settingsRef = useRef(null);
+
+
+
+  /* ------------------------------
+      Active Sidebar
+  ------------------------------ */
+
+  const [activeMenu, setActiveMenu] = useState("dashboard");
+
+
+
+  const scrollToSection = (ref, menu) => {
+
+    setActiveMenu(menu);
+
+    ref.current.scrollIntoView({
+
+      behavior: "smooth",
+
+      block: "start"
+
+    });
+
+  };
+
+
+
+  /* ------------------------------
+      Upload PDF
+  ------------------------------ */
 
   const uploadPDF = async () => {
 
@@ -37,19 +91,29 @@ function App() {
 
       alert("Document uploaded successfully!");
 
-    } catch (err) {
+    }
+
+    catch (err) {
 
       console.log(err);
 
       alert("Upload failed.");
 
-    } finally {
+    }
+
+    finally {
 
       setLoading(false);
 
     }
 
   };
+
+
+
+  /* ------------------------------
+      Ask Question
+  ------------------------------ */
 
   const askQuestion = async () => {
 
@@ -77,19 +141,29 @@ function App() {
 
       setPage(response.data.page);
 
-    } catch (err) {
+    }
+
+    catch (err) {
 
       console.log(err);
 
       alert("Failed to generate answer.");
 
-    } finally {
+    }
+
+    finally {
 
       setLoading(false);
 
     }
 
   };
+
+
+
+  /* ------------------------------
+      Copy
+  ------------------------------ */
 
   const copyAnswer = () => {
 
@@ -99,9 +173,15 @@ function App() {
 
   };
 
+
+
+  /* ------------------------------
+      Print
+  ------------------------------ */
+
   const printAnswer = () => {
 
-    const win = window.open("", "", "width=900,height=800");
+    const win = window.open("", "", "width=900,height=900");
 
     win.document.write(`
 
@@ -115,17 +195,17 @@ function App() {
 
       body{
 
-      font-family:Arial;
+        font-family:Arial;
 
-      margin:40px;
+        margin:40px;
 
-      line-height:1.8;
+        line-height:1.8;
 
       }
 
       h1{
 
-      color:#2563eb;
+        color:#2563eb;
 
       }
 
@@ -155,13 +235,19 @@ function App() {
 
       </html>
 
-      `);
+    `);
 
     win.document.close();
 
     win.print();
 
   };
+
+
+
+  /* ------------------------------
+      Download PDF
+  ------------------------------ */
 
   const downloadPDF = () => {
 
@@ -199,15 +285,19 @@ function App() {
 
   };
 
-  return (
+   return (
 
-    <div className="app">
+    <div className="dashboard">
 
-      <div className="glass-card">
+      {/* ===========================
+          Sidebar
+      =========================== */}
 
-        <div className="header">
+      <aside className="sidebar">
 
-          <div className="logo">
+        <div className="brand">
+
+          <div className="brand-logo">
 
             ⚖
 
@@ -215,155 +305,616 @@ function App() {
 
           <div>
 
-            <h1>Legal AI Assistant</h1>
+            <h2>Legal AI</h2>
 
-            <p>
-
-              AI Powered Legal Document Analysis using RAG & Llama 3.2
-
-            </p>
+            <span>Assistant</span>
 
           </div>
 
         </div>
 
-        <div className="upload-section">
+        <nav>
 
-          <h2>📄 Upload Legal Document</h2>
+          <ul>
 
-          <div className="upload-box">
+            <li
 
-            <input
+              className={activeMenu === "dashboard" ? "active" : ""}
 
-              type="file"
+              onClick={() =>
+                scrollToSection(dashboardRef, "dashboard")
+              }
 
-              accept=".pdf"
+            >
 
-              onChange={(e) => setSelectedFile(e.target.files[0])}
+              🏠 Dashboard
 
-            />
+            </li>
 
-            <p>
+            <li
 
-              Drag & Drop or Browse PDF
+              className={activeMenu === "documents" ? "active" : ""}
 
-            </p>
+              onClick={() =>
+                scrollToSection(documentsRef, "documents")
+              }
 
-          </div>
+            >
 
-          <button onClick={uploadPDF}>
+              📄 Documents
 
-            Upload Document
+            </li>
 
-          </button>
+            <li
 
-          {uploaded && (
+              className={activeMenu === "assistant" ? "active" : ""}
 
-            <div className="success">
+              onClick={() =>
+                scrollToSection(assistantRef, "assistant")
+              }
 
-              ✔ Document uploaded successfully
+            >
 
-            </div>
+              🤖 AI Assistant
 
-          )}
+            </li>
 
-        </div>
+            <li
 
-        <div className="question-section">
+              className={activeMenu === "reports" ? "active" : ""}
 
-          <h2>
+              onClick={() =>
+                scrollToSection(reportsRef, "reports")
+              }
 
-            💬 Ask Your Question
+            >
 
-          </h2>
+              📊 Reports
 
-          <textarea
+            </li>
 
-            placeholder="Example: What is the termination clause?"
+            <li
 
-            value={question}
+              className={activeMenu === "settings" ? "active" : ""}
 
-            onChange={(e) => setQuestion(e.target.value)}
+              onClick={() =>
+                scrollToSection(settingsRef, "settings")
+              }
 
-          />
+            >
 
-          <button onClick={askQuestion}>
+              ⚙ Settings
 
-            🔍 Analyze Document
+            </li>
 
-          </button>
+          </ul>
 
-        </div>
+        </nav>
 
-        {loading && (
+      </aside>
 
-          <div className="loading">
+      {/* ===========================
+          Main Content
+      =========================== */}
 
-            <div className="spinner"></div>
+      <main className="main-content">
 
-            <p>Analyzing Document...</p>
+        {/* ===========================
+            Dashboard
+        =========================== */}
 
-          </div>
+        <section
 
-        )}
+          ref={dashboardRef}
 
-        {answer && (
+          className="hero"
 
-          <div className="answer-card">
+        >
 
-            <h2>
+          <h1>
 
-              🤖 AI Analysis
+            ⚖ AI Powered Legal Document Analysis
 
-            </h2>
-
-            <hr />
-
-            <p>{answer}</p>
-
-            <div className="page">
-
-              📑 Source Page : {page}
-
-            </div>
-
-            <div className="buttons">
-
-              <button onClick={copyAnswer}>
-
-                📋 Copy
-
-              </button>
-
-              <button onClick={downloadPDF}>
-
-                📥 PDF
-
-              </button>
-
-              <button onClick={printAnswer}>
-
-                🖨 Print
-
-              </button>
-
-            </div>
-
-          </div>
-
-        )}
-
-        <footer>
+          </h1>
 
           <p>
 
-            Powered by FastAPI • RAG • Llama 3.2 • FAISS • Sentence Transformers
+            Upload legal documents, analyze clauses using
+
+            <strong> Retrieval Augmented Generation (RAG)</strong>
+
+            and
+
+            <strong> Llama 3.2</strong>
+
+            to receive intelligent legal insights with
+
+            page references.
 
           </p>
 
+        </section>
+
+        {/* ===========================
+            Statistics
+        =========================== */}
+
+        <section className="stats">
+
+          <div className="stat-card">
+
+            <h3>Documents</h3>
+
+            <h2>
+
+              {uploaded ? "1" : "0"}
+
+            </h2>
+
+            <p>Uploaded</p>
+
+          </div>
+
+          <div className="stat-card">
+
+            <h3>Questions</h3>
+
+            <h2>
+
+              {answer ? "1" : "0"}
+
+            </h2>
+
+            <p>Asked</p>
+
+          </div>
+
+          <div className="stat-card">
+
+            <h3>Reports</h3>
+
+            <h2>
+
+              {answer ? "1" : "0"}
+
+            </h2>
+
+            <p>Generated</p>
+
+          </div>
+
+          <div className="stat-card">
+
+            <h3>AI Status</h3>
+
+            <h2>
+
+              Ready
+
+            </h2>
+
+            <p>Online</p>
+
+          </div>
+
+        </section>
+
+        {/* ===========================
+            Content Grid
+        =========================== */}
+
+        <section className="content-grid">
+
+          <div className="left-panel">
+
+            {/* ===========================
+                Documents Section
+            =========================== */}
+
+            <section
+
+              ref={documentsRef}
+
+              className="card"
+
+            >
+
+              <h2>
+
+                📄 Upload Document
+
+              </h2>
+
+              <p>
+
+                Upload your legal agreement to begin analysis.
+
+              </p>
+                            <div className="upload-box">
+
+                <div className="upload-icon">
+
+                  📂
+
+                </div>
+
+                <p>
+
+                  Drag & Drop PDF Here
+
+                </p>
+
+                <p>
+
+                  or Click to Browse
+
+                </p>
+
+                <input
+
+                  type="file"
+
+                  accept=".pdf"
+
+                  onChange={(e) =>
+                    setSelectedFile(e.target.files[0])
+                  }
+
+                />
+
+              </div>
+
+              <button
+
+                className="primary-btn"
+
+                onClick={uploadPDF}
+
+              >
+
+                Upload Document
+
+              </button>
+
+              {uploaded && (
+
+                <div className="success-card">
+
+                  ✅ Document uploaded successfully.
+
+                </div>
+
+              )}
+
+            </section>
+
+            {/* ===========================
+                AI Assistant
+            =========================== */}
+
+            <section
+
+              ref={assistantRef}
+
+              className="card"
+
+            >
+
+              <h2>
+
+                🤖 AI Assistant
+
+              </h2>
+
+              <p>
+
+                Ask questions about the uploaded legal document.
+
+              </p>
+
+              <textarea
+
+                placeholder="Example: What is the termination clause?"
+
+                value={question}
+
+                onChange={(e) =>
+                  setQuestion(e.target.value)
+                }
+
+              />
+
+              <button
+
+                className="primary-btn"
+
+                onClick={askQuestion}
+
+              >
+
+                🔍 Analyze Document
+
+              </button>
+
+            </section>
+
+          </div>
+
+          {/* ===========================
+              Right Panel
+          =========================== */}
+
+          <div className="right-panel">
+
+            <div className="card ai-card">
+
+              <div className="ai-header">
+
+                <div>
+
+                  <h2>
+
+                    AI Analysis
+
+                  </h2>
+
+                  <span>
+
+                    Powered by RAG + Llama 3.2
+
+                  </span>
+
+                </div>
+
+                <div className="status">
+
+                  ONLINE
+
+                </div>
+
+              </div>
+
+              {loading && (
+
+                <div className="loading-container">
+
+                  <div className="spinner"></div>
+
+                  <h3>
+
+                    Analyzing Document...
+
+                  </h3>
+
+                  <p>
+
+                    Searching vector database and generating response...
+
+                  </p>
+
+                </div>
+
+              )}
+
+              {!loading && !answer && (
+
+                <div className="empty-state">
+
+                  <div className="empty-icon">
+
+                    🤖
+
+                  </div>
+
+                  <h3>
+
+                    Ready to Assist
+
+                  </h3>
+
+                  <p>
+
+                    Upload a legal document and ask a question to receive an AI-generated legal analysis with source page references.
+
+                  </p>
+
+                </div>
+
+              )}
+
+              {!loading && answer && (
+
+                <section
+
+                  ref={reportsRef}
+
+                  className="answer-section"
+
+                >
+
+                  <h2 className="answer-title">
+
+                    AI Response
+
+                  </h2>
+
+                  <div className="answer-content">
+
+                    {answer}
+
+                  </div>
+
+                  <div className="reference-box">
+
+                    📑 Source Page : {page}
+
+                  </div>
+
+                  <div className="action-buttons">
+
+                    <button
+
+                      className="secondary-btn"
+
+                      onClick={copyAnswer}
+
+                    >
+
+                      📋 Copy
+
+                    </button>
+
+                    <button
+
+                      className="secondary-btn"
+
+                      onClick={downloadPDF}
+
+                    >
+
+                      📥 Download PDF
+
+                    </button>
+
+                    <button
+
+                      className="secondary-btn"
+
+                      onClick={printAnswer}
+
+                    >
+
+                      🖨 Print
+
+                    </button>
+
+                  </div>
+
+                </section>
+
+              )}
+
+            </div>
+                        {/* ===========================
+                Settings Section
+            =========================== */}
+
+            <section
+              ref={settingsRef}
+              className="card"
+              style={{ marginTop: "30px" }}
+            >
+
+              <h2>⚙ Project Information</h2>
+
+              <br />
+
+              <h3>About</h3>
+
+              <p>
+
+                Legal AI Assistant is an AI-powered legal document analysis
+                system that combines Retrieval Augmented Generation (RAG)
+                with Llama 3.2 to answer questions from uploaded legal
+                documents.
+
+              </p>
+
+              <br />
+
+              <h3>Technology Stack</h3>
+
+              <br />
+
+              <div className="footer-right">
+
+                <span>React</span>
+
+                <span>FastAPI</span>
+
+                <span>FAISS</span>
+
+                <span>Sentence Transformers</span>
+
+                <span>Ollama</span>
+
+                <span>Llama 3.2</span>
+
+                <span>RAG</span>
+
+              </div>
+
+              <br />
+
+              <h3>Version</h3>
+
+              <p>
+
+                Version 1.0.0
+
+              </p>
+
+              <br />
+
+              <h3>Developer</h3>
+
+              <p>
+
+                Ashwin Vipin
+
+              </p>
+
+              <p>
+
+                B.Tech Computer Science (Blockchain)
+
+              </p>
+
+            </section>
+
+          </div>
+
+        </section>
+
+        {/* ===========================
+            Footer
+        =========================== */}
+
+        <footer className="footer">
+
+          <div>
+
+            <h3>
+
+              ⚖ Legal AI Assistant
+
+            </h3>
+
+            <p>
+
+              AI Powered Legal Document Analysis using RAG & LLM
+
+            </p>
+
+          </div>
+
+          <div className="footer-right">
+
+            <span>FastAPI</span>
+
+            <span>React</span>
+
+            <span>FAISS</span>
+
+            <span>Llama 3.2</span>
+
+            <span>Ollama</span>
+
+          </div>
+
         </footer>
 
-      </div>
+      </main>
 
     </div>
 
