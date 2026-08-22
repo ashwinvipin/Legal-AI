@@ -1,188 +1,198 @@
-⚖️ AI-Based Legal Document Analysis & Question Answering System
-🤖 An intelligent Legal AI application that helps users understand and analyze legal PDF documents using RAG, LLMs, Semantic Search, and Vector Embeddings.
+⚖️ AI-Based Legal Document Analysis and Question Answering System
 
-🌟 Overview
-Legal documents such as contracts, agreements, NDAs, and policies can be lengthy and difficult to understand. This project allows users to upload a legal PDF and ask questions in natural language.
+🤖 Project Overview
 
-The system uses Retrieval-Augmented Generation (RAG) to retrieve relevant sections from the document and generates context-based answers using Llama 3.2 through Ollama.
+AI-based system for analyzing legal PDF documents.
 
-✨ Features
-📄 Upload legal documents in PDF format
+Allows users to upload legal documents and ask questions in natural language.
 
-🔍 Extract text from uploaded PDF documents
+Designed for documents such as contracts, agreements, NDAs, and policy documents.
 
-✂️ Split document text into meaningful chunks
+Uses Retrieval-Augmented Generation (RAG) to retrieve relevant information before generating an answer.
 
-🧠 Generate vector embeddings for document chunks
+Uses Llama 3.2 through Ollama for AI-based answer generation.
 
-🗂️ Store and search embeddings using FAISS
+Uses semantic search to identify relevant sections of the uploaded document.
 
-🔎 Perform semantic similarity search
+Displays source page information to help users locate the relevant content.
 
-💬 Ask questions about uploaded legal documents
+✨ Key Features
 
-📚 Retrieve relevant document context before answer generation
+📄 Upload legal documents in PDF format.
 
-🤖 Generate context-based answers using Llama 3.2
+📝 Extract text from uploaded PDF documents.
 
-🦙 Run the LLM locally through Ollama
+✂️ Divide extracted text into meaningful chunks.
 
-📍 Display relevant source page information
+🧠 Generate embeddings for document content.
 
-📋 Copy generated answers
+🗂️ Store embeddings using FAISS.
 
-🖨️ Print analysis results
+🔍 Perform semantic similarity search.
 
-📥 Download question-and-answer results as a PDF
+💬 Ask questions about the uploaded document.
 
-🎨 Interactive and responsive user interface
+📚 Retrieve relevant document sections before generating answers.
 
-🏗️ Project Architecture
-👤 User
-   │
-   ▼
-⚛️ React Frontend
-   │
-   │  📄 PDF Upload / 💬 Question
-   ▼
-⚡ FastAPI Backend
-   │
-   ├── 📄 PDF Processing (PyMuPDF)
-   │       │
-   │       ▼
-   │    📝 Text Extraction
-   │       │
-   │       ▼
-   │    ✂️ Text Chunking
-   │       │
-   │       ▼
-   │ 🧠 Sentence Transformers
-   │       │
-   │       ▼
-   │    🔢 Embeddings
-   │       │
-   │       ▼
-   │ 🗂️ FAISS Vector Store
-   │
-   └── 💬 User Question
-           │
-           ▼
-      🔢 Question Embedding
-           │
-           ▼
-    🔎 Semantic Similarity Search
-           │
-           ▼
-   📚 Relevant Document Chunks
-           │
-           ▼
-        🧩 RAG Context
-           │
-           ▼
-    🤖 Llama 3.2 via Ollama
-           │
-           ▼
-   💡 Context-Based Answer
-           │
-           ▼
-📱 React UI + 📍 Source Page
-⚙️ How It Works
-1️⃣ Upload PDF
+🤖 Generate context-based answers using Llama 3.2.
+
+🦙 Run the AI model locally through Ollama.
+
+📍 Display relevant source page information.
+
+📋 Copy generated answers.
+
+🖨️ Print analysis results.
+
+📥 Download question-and-answer results as a PDF.
+
+🎨 Provide a clean and interactive web interface.
+
+🛠️ Technology Stack
+
+🎨 Frontend
+
+⚛️ React.js – User interface development.
+
+🟨 JavaScript – Frontend functionality and application logic.
+
+🎨 CSS – User interface styling and responsive design.
+
+🔗 Axios – Communication between frontend and backend.
+
+📄 jsPDF – Generation and download of analysis results as PDF.
+
+⚡ Backend
+
+🐍 Python – Core backend programming language.
+
+⚡ FastAPI – Development of REST API services.
+
+🚀 Uvicorn – ASGI server for running the FastAPI application.
+
+🤖 Artificial Intelligence and RAG
+
+🧩 Retrieval-Augmented Generation (RAG) – Context-based question answering.
+
+🧠 Sentence Transformers – Generation of text embeddings.
+
+🔤 all-MiniLM-L6-v2 – Semantic embedding model.
+
+🗂️ FAISS – Vector storage and similarity search.
+
+🦙 Ollama – Local Large Language Model runtime.
+
+🤖 Llama 3.2 – AI-based answer generation.
+
+📄 Document Processing
+
+📑 PyMuPDF – PDF text extraction and page processing.
+
+🧰 Development Tools
+
+🔧 Git – Version control.
+
+🐙 GitHub – Source code repository and project backup.
+
+🧠 Working Methodology
+
+📄 Document Processing
+
 The user uploads a legal document in PDF format.
 
-2️⃣ PDF Text Extraction
-The backend extracts text and page-related information from the PDF.
+The backend extracts text and page information from the document.
 
-3️⃣ Text Chunking
-The extracted document text is divided into smaller meaningful chunks.
+The extracted text is divided into smaller meaningful chunks.
 
-4️⃣ Embedding Generation
-The chunks are converted into vector representations using a Sentence Transformers model.
+Each chunk is converted into a numerical vector representation.
 
-5️⃣ Vector Storage
-The embeddings are stored in a FAISS vector index.
+The generated embeddings are stored in the FAISS vector database.
 
-6️⃣ Question Processing
-When the user asks a question, it is also converted into an embedding.
+💬 Question Answering
 
-7️⃣ Semantic Search
-FAISS retrieves the document chunks most semantically relevant to the question.
+The user asks a question in natural language.
 
-8️⃣ RAG Context Retrieval
-The relevant chunks and source information are provided as context to the LLM.
+The question is converted into an embedding using the Sentence Transformers model.
 
-9️⃣ Answer Generation
-Llama 3.2, running locally through Ollama, generates an answer based on the retrieved document context.
+FAISS performs semantic similarity search.
 
-🔟 Result Display
-The frontend displays the generated answer and relevant source page information. Users can copy, print, or download the result.
+The most relevant document chunks are retrieved.
 
-🛠️ Tech Stack
-🎨 Frontend
-Technology	Purpose
-⚛️ React.js	User interface development
-🟨 JavaScript	Application logic and frontend functionality
-🎨 CSS	Styling and responsive user interface
-🔗 Axios	Frontend-backend communication
-📄 jsPDF	PDF generation and download
-⚡ Backend
-Technology	Purpose
-🐍 Python	Core backend programming
-⚡ FastAPI	REST API development
-🚀 Uvicorn	ASGI server for running the backend
-🤖 AI & RAG
-Technology	Purpose
-🧩 RAG	Context-based document question answering
-🧠 Sentence Transformers	Embedding generation
-🔤 all-MiniLM-L6-v2	Semantic text embedding model
-🗂️ FAISS	Vector storage and similarity search
-🦙 Ollama	Local LLM runtime
-🤖 Llama 3.2	Context-based answer generation
-📄 Document Processing
-Technology	Purpose
-📑 PyMuPDF	PDF text extraction and page processing
-🧰 Development Tools
-Technology	Purpose
-🔧 Git	Version control
-🐙 GitHub	Source code repository and project backup
-🧠 AI Concepts Used
-🤖 Large Language Model (LLM)
-Llama 3.2 generates answers based on relevant context retrieved from the uploaded legal document.
+The retrieved chunks are used as context for the AI model.
 
-🧩 Retrieval-Augmented Generation (RAG)
-RAG is the core architecture of the project. Instead of sending the entire document to the LLM for every question, the system first retrieves the most relevant sections and provides them as context.
+Llama 3.2 analyzes the provided context and generates an answer.
+
+The answer and relevant source page information are displayed to the user.
+
+🧩 AI Concepts Used
+
+🤖 Large Language Model
+
+Llama 3.2 is used to generate answers based on the retrieved document context.
+
+The model runs locally through Ollama.
+
+The AI model receives relevant context instead of processing the complete document for every question.
+
+🧠 Retrieval-Augmented Generation
+
+RAG is the main AI architecture used in the project.
+
+Relevant document sections are retrieved before answer generation.
+
+This helps ground the generated answer in the uploaded document.
+
+The approach reduces irrelevant responses and improves document-based question answering.
 
 🔢 Embeddings
-The all-MiniLM-L6-v2 Sentence Transformers model converts document chunks and user questions into numerical vector representations.
 
-🔎 Semantic Search
-FAISS compares vector representations to identify document sections that are semantically relevant to the user's question.
+Document chunks are converted into vector representations.
+
+User questions are also converted into embeddings.
+
+The system uses these representations to compare semantic meaning.
+
+🔍 Semantic Search
+
+FAISS searches for document sections that are semantically related to the user's question.
+
+Relevant information can be retrieved even when the exact wording of the question is different from the wording in the document.
 
 📁 Project Structure
-📦 Legal-AI/
-│
-├── 📂 backend/
-│   ├── 🐍 app.py
-│   ├── 🧩 rag.py
-│   ├── 📄 pdf_loader.py
-│   ├── 🧠 embeddings.py
-│   ├── 🗂️ vector_store.py
-│   └── 📋 requirements.txt
-│
-├── 📂 frontend/
-│   └── 📂 frontend/
-│       ├── 📂 src/
-│       │   ├── ⚛️ App.js
-│       │   └── 🎨 App.css
-│       ├── 📋 package.json
-│       └── 📋 package-lock.json
-│
-└── 📖 README.md
-💡 The exact file structure may vary depending on your local project setup.
 
-🚀 Installation & Setup
-📌 Prerequisites
-Make sure the following are installed:
+📦 Legal-AI
+
+📂 backend
+
+🐍 app.py
+
+🧩 rag.py
+
+📄 pdf_loader.py
+
+🧠 embeddings.py
+
+🗂️ vector_store.py
+
+📋 requirements.txt
+
+📂 frontend
+
+📂 frontend
+
+📂 src
+
+⚛️ App.js
+
+🎨 App.css
+
+📋 package.json
+
+📖 README.md
+
+🚀 Installation and Setup
+
+📌 Requirements
 
 🐍 Python
 
@@ -192,102 +202,95 @@ Make sure the following are installed:
 
 🔧 Git
 
-You also need the Llama 3.2 model available in Ollama.
-
 1️⃣ Clone the Repository
+
 git clone https://github.com/Syed-subhan1207/Legal-AI.git
 cd Legal-AI
-2️⃣ Backend Setup
-Move to the backend directory:
+
+2️⃣ Install Backend Dependencies
 
 cd backend
-Install the required dependencies:
-
 pip install fastapi uvicorn ollama pymupdf sentence-transformers faiss-cpu
-Run the backend:
+
+3️⃣ Run the Backend
 
 uvicorn app:app --reload
-The backend should run at:
 
-http://127.0.0.1:8000
-📚 FastAPI API documentation:
+Backend server: http://127.0.0.1:8000
 
-http://127.0.0.1:8000/docs
-3️⃣ Ollama Setup
-Make sure Ollama is installed and the required model is available:
+API documentation: http://127.0.0.1:8000/docs
+
+4️⃣ Set Up Ollama
 
 ollama pull llama3.2
-4️⃣ Frontend Setup
-Open another terminal and move to the frontend directory:
+
+5️⃣ Install Frontend Dependencies
 
 cd frontend/frontend
-Install dependencies:
-
 npm install
-Start the React application:
+
+6️⃣ Run the Frontend
 
 npm start
-🌐 The frontend will open at the address shown by the React development server.
 
-🔄 API Workflow
-📤 Document Upload
-📄 PDF Upload
-      ↓
-⚡ FastAPI
-      ↓
-📝 Text Extraction
-      ↓
-✂️ Chunking
-      ↓
-🧠 Embedding Generation
-      ↓
-🗂️ FAISS Vector Storage
-💬 Question Answering
-💬 User Question
-      ↓
-🔢 Question Embedding
-      ↓
-🔎 FAISS Semantic Search
-      ↓
-📚 Relevant Document Chunks
-      ↓
-🧩 RAG Context
-      ↓
-🤖 Llama 3.2 via Ollama
-      ↓
-💡 Generated Answer + 📍 Source Page
+Open the frontend using the local address displayed by the React development server.
+
+🎯 Main Project Objectives
+
+Simplify the process of understanding complex legal documents.
+
+Reduce the effort required to manually search through lengthy documents.
+
+Allow users to ask questions using natural language.
+
+Retrieve relevant information using semantic search.
+
+Generate answers based on the contents of the uploaded document.
+
+Display source page information for better transparency.
+
+Demonstrate the practical use of RAG and Large Language Models.
+
+Integrate AI technologies with a modern full-stack web application.
+
 🔮 Future Enhancements
-📚 Support for multiple PDF documents
 
-💬 Conversation history
+📚 Support for multiple legal documents.
 
-🏷️ Advanced legal clause classification
+💬 Conversation history and follow-up questions.
 
-📝 Legal document summarization
+🏷️ Advanced legal clause classification.
 
-🌍 Multilingual document analysis
+📝 Automatic legal document summarization.
 
-🔐 User authentication
+🌍 Multilingual document analysis.
 
-💾 Persistent document storage
+🔐 User authentication and account management.
 
-☁️ Cloud-based vector databases
+💾 Persistent document storage.
 
-📌 Improved source citations
+☁️ Cloud-based vector databases.
 
-🔍 Advanced legal search and filtering
+📌 Improved source references.
 
-🏛️ Integration with professional legal information systems
+🔎 Advanced document search and filtering.
+
+🏛️ Integration with professional legal information systems.
 
 ⚠️ Limitations
-This system is mainly developed for academic and demonstration purposes. Answer quality depends on the extracted PDF text, retrieved context, embedding quality, and the local LLM.
 
-⚖️ Disclaimer: This application is an AI-based document analysis tool and should not be treated as a replacement for professional legal advice.
+The current implementation is mainly designed for academic and demonstration purposes.
+
+Answer quality depends on PDF text extraction and the quality of retrieved context.
+
+Performance depends on the embedding model and local LLM configuration.
+
+The application is designed as a document analysis and question-answering tool.
+
+⚖️ Disclaimer: This system is not a replacement for professional legal advice.
 
 👨‍💻 Author
-Ashwin Vipin
+
+Syed Subhan
 
 🎓 Developed as an individual AI internship project.
-
-📜 License
-This project is intended for educational and academic purposes
